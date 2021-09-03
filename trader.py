@@ -43,12 +43,12 @@ data1 = bt.feeds.YahooFinanceCSVData(
 
 # use this if you want to change data to higher time frame
 cerebro.resampledata(data,
-                         timeframe=bt.TimeFrame.Minutes,
-                         compression=15)
+                         timeframe=bt.TimeFrame.Days,
+                         compression=1)
 
 # cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(BuyDip)
+cerebro.addstrategy(SmaCross)
 cerebro.run()
 print(cerebro.broker.getvalue())
 cerebro.plot()
