@@ -5,6 +5,8 @@ from strategies.dip import BuyDip
 from strategies.sma import SmaCross
 from strategies.goldenCross import GoldenCross
 from strategies.BuyHold import BuyHold
+from indicators.supertrend import SuperTrend
+# from indicators.supertrend import SuperTrendBand
 
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 
@@ -48,7 +50,7 @@ cerebro.resampledata(data1,
 
 # cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(GoldenCross)
+cerebro.addstrategy(SuperTrend)
 cerebro.run()
 print(cerebro.broker.getvalue())
 cerebro.plot()
