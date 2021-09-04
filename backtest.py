@@ -1,10 +1,10 @@
 import datetime
 import backtrader as bt
 import backtrader.feeds as btfeed
-import sys
-sys.path.insert(0, 'C:/Users/Himanshu Pandey/Documents/Project/Code/backtrader/strategies')
-from dip import BuyDip
-from sma import SmaCross
+from strategies.dip import BuyDip
+from strategies.sma import SmaCross
+from strategies.goldenCross import GoldenCross
+from strategies.BuyHold import BuyHold
 
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 
@@ -15,7 +15,7 @@ print(cerebro.broker.getvalue())
 data = btfeed.GenericCSVData(
     dataname='./Data/Custom/BANKNIFTY.csv',
 
-    fromdate=datetime.datetime(2020, 3, 20),
+    fromdate=datetime.datetime(2020, 1, 1),
     todate=datetime.datetime(2020, 12, 31),
     nullvalue=0.0,
     dtformat=('%Y/%m/%d'),
@@ -35,20 +35,20 @@ data = btfeed.GenericCSVData(
 )
 
 data1 = bt.feeds.YahooFinanceCSVData(
-    dataname = './Data/Yahoo/MSFT.csv',
-    fromdate=datetime.datetime(2020, 9, 1),
-    todate=datetime.datetime(2021, 9, 1),
+    dataname = './Data/Yahoo/BTC-USD.csv',
+    fromdate=datetime.datetime(2018, 1, 4),
+    todate=datetime.datetime(2021, 9, 4),
     reverse = False
 )
 
 # use this if you want to change data to higher time frame
-cerebro.resampledata(data,
+cerebro.resampledata(data1,
                          timeframe=bt.TimeFrame.Days,
                          compression=1)
 
 # cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(SmaCross)
+cerebro.addstrategy(GoldenCross)
 cerebro.run()
 print(cerebro.broker.getvalue())
 cerebro.plot()
