@@ -6,6 +6,7 @@ from strategies.sma import SmaCross
 from strategies.goldenCross import GoldenCross
 from strategies.BuyHold import BuyHold
 from strategies.supertrendStrategy import SupertrendStrategy
+from strategies.alligatorStrategy import AlligatorStrategy
 
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 
@@ -48,7 +49,7 @@ cerebro.resampledata(data,
 
 # cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(SupertrendStrategy)
+cerebro.addstrategy(AlligatorStrategy)
 cerebro.run()
 print(cerebro.broker.getvalue())
 cerebro.plot()
