@@ -12,6 +12,6 @@ class Alligator(bt.Indicator):
         self.average = (self.data.high + self.data.low) / 2
 
     def next(self):
-        self.jaw = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.jaw_length, plotname='Jaw')(self.params.jaw_offset)
-        self.teeth = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.teeth_length, plotname='Teeth')(self.params.teeth_offset)
-        self.lips = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.lips_length, plotname='Lips')(self.params.lips_offset)
+        self.lines.jaw = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.jaw_length, plotname='Jaw')(self.params.jaw_offset)
+        self.lines.teeth = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.teeth_length, plotname='Teeth')(self.params.teeth_offset)
+        self.lines.lips = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.lips_length, plotname='Lips')(self.params.lips_offset)

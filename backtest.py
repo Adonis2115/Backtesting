@@ -1,4 +1,5 @@
 import datetime
+from indicators.alligator import Alligator
 import backtrader as bt
 import backtrader.feeds as btfeed
 from strategies.dip import BuyDip
@@ -8,12 +9,10 @@ from strategies.BuyHold import BuyHold
 from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
 
-cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
+cerebro = bt.Cerebro()
 
 cerebro.broker.set_cash(1000000)
-print(cerebro.broker.getvalue())
 
-# Create a data feed
 data = btfeed.GenericCSVData(
     dataname='./Data/Custom/BANKNIFTY.csv',
 
@@ -47,9 +46,9 @@ cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Days,
                          compression=1)
 
-# cerebro.adddata(data)  # Add the data feed
+# cerebro.adddata(data)
 
-cerebro.addstrategy(AlligatorStrategy)
+# cerebro.addstrategy(AlligatorStrategy)
+cerebro.addindicator(Alligator)
 cerebro.run()
-print(cerebro.broker.getvalue())
 cerebro.plot()
