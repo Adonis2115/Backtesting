@@ -5,8 +5,7 @@ from strategies.dip import BuyDip
 from strategies.sma import SmaCross
 from strategies.goldenCross import GoldenCross
 from strategies.BuyHold import BuyHold
-from indicators.supertrend import SuperTrend
-# from indicators.supertrend import SuperTrendBand
+from strategies.supertrendStrategy import SupertrendStrategy
 
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 
@@ -43,14 +42,13 @@ data1 = bt.feeds.YahooFinanceCSVData(
     reverse = False
 )
 
-# use this if you want to change data to higher time frame
-cerebro.resampledata(data1,
+cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Days,
                          compression=1)
 
 # cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(SuperTrend)
+cerebro.addstrategy(SupertrendStrategy)
 cerebro.run()
 print(cerebro.broker.getvalue())
 cerebro.plot()
