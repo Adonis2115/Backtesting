@@ -43,12 +43,12 @@ data1 = bt.feeds.YahooFinanceCSVData(
 )
 
 cerebro.resampledata(data,
-                         timeframe=bt.TimeFrame.Days,
-                         compression=1)
+                         timeframe=bt.TimeFrame.Minutes,
+                         compression=15)
 
 # cerebro.adddata(data)
 
-# cerebro.addstrategy(AlligatorStrategy)
-cerebro.addindicator(Alligator)
+cerebro.addstrategy(AlligatorStrategy)
+# cerebro.addindicator(Alligator)
 cerebro.run()
 cerebro.plot()
