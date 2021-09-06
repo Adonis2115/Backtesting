@@ -8,6 +8,8 @@ from strategies.goldenCross import GoldenCross
 from strategies.BuyHold import BuyHold
 from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
+from indicators.pivots import PivotPoint
+from strategies.pivotStrategy import PivotStrategy
 
 cerebro = bt.Cerebro()
 
@@ -45,10 +47,12 @@ data1 = bt.feeds.YahooFinanceCSVData(
 cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
                          compression=15)
+cerebro.resampledata(data,
+                         timeframe=bt.TimeFrame.Days,
+                         compression=1)
 
-# cerebro.adddata(data)
 
-cerebro.addstrategy(AlligatorStrategy)
-# cerebro.addindicator(Alligator)
+cerebro.addstrategy(PivotStrategy)
+# cerebro.addindicator(PivotPoint)
 cerebro.run()
 cerebro.plot()
