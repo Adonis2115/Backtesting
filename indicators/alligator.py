@@ -9,7 +9,10 @@ class Alligator(bt.Indicator):
     plotinfo = dict(subplot=False)
 
     def __init__(self):
-        self.average = (self.data.high + self.data.low) / 2
-        self.lines.jaw = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.jaw_length, plotname='Jaw')#(self.params.jaw_offset)
-        self.lines.teeth = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.teeth_length, plotname='Teeth')#(self.params.teeth_offset)
-        self.lines.lips = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.lips_length, plotname='Lips')#(self.params.lips_offset)
+        self.average = (self.data.high + self.data.low) / 2 
+        _jaw = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.jaw_length, plotname='Jaw')
+        self.lines.jaw =_jaw(-1 * self.params.jaw_offset)
+        _teeth = bt.indicators.SmoothedMovingAverage(self.average, period=self.params.teeth_length, plotname='Teeth')
+        self.lines.teeth = _teeth(-1 * self.params.teeth_offset)
+        _lips =  bt.indicators.SmoothedMovingAverage(self.average, period=self.params.lips_length, plotname='Lips')
+        self.lines.lips = _lips(-1 * self.params.lips_offset)
