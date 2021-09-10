@@ -44,10 +44,13 @@ data2 = bt.feeds.YahooFinanceCSVData(
     reverse = False
 )
 
-cerebro.adddata(data2)
-cerebro.resampledata(data2,
-                         timeframe=bt.TimeFrame.Months,
-                         compression=1)
+# cerebro.adddata(data)
+cerebro.resampledata(data,
+                         timeframe=bt.TimeFrame.Minutes,
+                         compression=15)
+cerebro.resampledata(data,
+                         timeframe=bt.TimeFrame.Days,
+                         compression=1).plotinfo.plot=False
 
 
 cerebro.addstrategy(PivotStrategy)
