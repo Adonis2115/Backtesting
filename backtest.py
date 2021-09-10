@@ -37,18 +37,16 @@ data = btfeed.GenericCSVData(
     openinterest=-1
 )
 
-data1 = bt.feeds.YahooFinanceCSVData(
+data2 = bt.feeds.YahooFinanceCSVData(
     dataname = './Data/Yahoo/BTC-USD.csv',
     fromdate=datetime.datetime(2018, 1, 4),
     todate=datetime.datetime(2021, 9, 4),
     reverse = False
 )
 
-cerebro.resampledata(data,
-                         timeframe=bt.TimeFrame.Minutes,
-                         compression=15)
-cerebro.resampledata(data,
-                         timeframe=bt.TimeFrame.Days,
+cerebro.adddata(data2)
+cerebro.resampledata(data2,
+                         timeframe=bt.TimeFrame.Months,
                          compression=1)
 
 
