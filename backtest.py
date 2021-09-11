@@ -10,6 +10,7 @@ from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.pivotStrategy import PivotStrategy
+from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
 
 cerebro = bt.Cerebro()
 
@@ -53,7 +54,7 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(PivotStrategy)
+cerebro.addstrategy(ArjunBhatiaFutures)
 # cerebro.addindicator(PivotPoint)
 cerebro.run()
 cerebro.plot()
