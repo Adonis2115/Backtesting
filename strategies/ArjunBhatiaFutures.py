@@ -25,8 +25,8 @@ class ArjunBhatiaFutures(bt.Strategy):
             isS1 = self.data.close[-1] > self.pivotindicator.s1[0] and self.data.open[-1] < self.pivotindicator.s1[0]
             isS2 = self.data.close[-1] > self.pivotindicator.s2[0] and self.data.open[-1] < self.pivotindicator.s2[0]
             isR1 = self.data.close[-1] > self.pivotindicator.r1[0] and self.data.open[-1] < self.pivotindicator.r1[0]
-            isR2 = self.data.close[-1] > self.pivotindicator.r2[0] and self.data.open[-1] < self.pivotindicator.r2[0] 
-            if isAlligator and  isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2) and self.data.high[0] >= self.data.high[-1]: #if new high is higher than previous high then buy would have been taken
+            isR2 = self.data.close[-1] > self.pivotindicator.r2[0] and self.data.open[-1] < self.pivotindicator.r2[0]
+            if isAlligator and  isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2) and self.data.high[0] >= self.data.high[-1] and self.datas[0].datetime.time().hour >= 9: #if new high is higher than previous high then buy would have been taken
                 # amount_to_invest = (self.params.order_percentage * self.broker.cash)
                 self.size = 2
                 print("Buy {} shares of {} at {}".format(self.size, self.params.ticker, self.data.high[-1]))
@@ -37,12 +37,11 @@ class ArjunBhatiaFutures(bt.Strategy):
                     self.sl = self.data.low[-1]
                     self.target = self.data.high[-1] + 2*(self.data.high[-1] - self.data.low[-1])
                 self.buy(size=self.size)
-                print(self.sl, self.target, self.data.high[-1] - self.data.low[-1])
 
         if self.position.size > 0:
             if self.data.low[0] <= self.sl:
                 print("Sell {} shares of {} at {}".format(self.size, self.params.ticker, self.sl))
                 self.close()
-            if  self.data.high[0] >= self.target:
-                print("Sell {} shares of {} at {}".format(self.size, self.params.ticker, self.target))
+            if  self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
+                print("Sell {} shares of {} at {}".format(self.size, self.params.ticker, self.data.close[0]))
                 self.close()
