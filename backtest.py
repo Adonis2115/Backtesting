@@ -17,7 +17,7 @@ cerebro = bt.Cerebro()
 cerebro.broker.set_cash(1000000)
 
 data = btfeed.GenericCSVData(
-    dataname='./Data/Custom/BANKNIFTY.csv',
+    dataname='./Data/Custom/BANKNIFTY_F1.csv',
 
     fromdate=datetime.datetime(2020, 1, 1),
     todate=datetime.datetime(2020, 12, 31),
