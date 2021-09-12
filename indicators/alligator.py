@@ -4,9 +4,21 @@ class Alligator(bt.Indicator):
     """
     Alligator indicator
     """
-    params = (('jaw_length',13),('teeth_length',8), ('lips_length',5),('jaw_offset',8), ('teeth_offset',5),('lips_offset',3))
+    params = (
+        ('jaw_length',13),
+        ('teeth_length',8),
+        ('lips_length',5),
+        ('jaw_offset',8),
+        ('teeth_offset',5),
+        ('lips_offset',3),
+    )
     lines = ('jaw','teeth','lips')
     plotinfo = dict(subplot=False)
+    plotlines = dict(
+        jaw=dict(_plotskip=False),
+        teeth=dict(_plotskip=True),
+        lips=dict(_plotskip=True),
+    )
 
     def __init__(self):
         self.average = (self.data.high + self.data.low) / 2 
