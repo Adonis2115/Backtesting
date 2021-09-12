@@ -38,8 +38,7 @@ class ArjunBhatiaFutures(bt.Strategy):
                     self.target = self.data.high[-1] + 2*(self.data.high[-1] - self.data.low[-1])
                 self.buy(size=self.size)
 
-        if self.position.size > 0:
-            print(self.position)
+        if self.position.size !=0:
             if self.data.low[0] <= self.sl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
                 print("Sell {} shares of {} at {}".format(self.size, self.params.ticker, self.data.low[0]))
                 self.close()
