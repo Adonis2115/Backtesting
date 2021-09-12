@@ -17,7 +17,7 @@ cerebro = bt.Cerebro()
 cerebro.broker.set_cash(1000000)
 
 data = btfeed.GenericCSVData(
-    dataname='./Data/Custom/BANKNIFTY_F1.csv',
+    dataname='./Data/Custom/BANKNIFTY.csv',
 
     fromdate=datetime.datetime(2020, 1, 1),
     todate=datetime.datetime(2020, 12, 31),
@@ -57,4 +57,4 @@ cerebro.resampledata(data,
 cerebro.addstrategy(ArjunBhatiaFutures)
 # cerebro.addindicator(PivotPoint)
 cerebro.run()
-cerebro.plot()
+cerebro.plot(style='candle', barup='green')

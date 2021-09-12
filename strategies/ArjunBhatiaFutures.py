@@ -1,12 +1,12 @@
 import math
 import backtrader as bt
 from indicators.alligator import Alligator
-from indicators.pivots import PivotPoint
 from indicators.supertrend import SuperTrend
 
 class ArjunBhatiaFutures(bt.Strategy):
     params = (('jaw_length', 13), ('teeth_length', 8), ('lips_length', 5), ('jaw_offset', 8), ('teeth_offset', 5), ('lips_offset', 3), ('order_percentage', 0.95), ('ticker', 'Banknifty'), ('period', 10), ('multiplier', 3))
     sl = target = None
+    plotinfo = dict(subplot=True)
     def __init__(self):
         self.alligator = Alligator(
             self.data, jaw_length = self.params.jaw_length, teeth_length = self.params.teeth_length, lips_length = self.params.lips_length, jaw_offset = self.params.jaw_offset, teeth_offset = self.params.teeth_offset, lips_offset = self.params.lips_offset, plotname = "Alligator"
