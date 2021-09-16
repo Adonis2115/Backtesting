@@ -14,11 +14,6 @@ class Alligator(bt.Indicator):
     )
     lines = ('jaw','teeth','lips')
     plotinfo = dict(subplot=False)
-    plotlines = dict(
-        jaw=dict(_plotskip=False),
-        teeth=dict(_plotskip=True),
-        lips=dict(_plotskip=True),
-    )
 
     def __init__(self):
         self.average = (self.data.high + self.data.low) / 2 

@@ -9,7 +9,12 @@ class ArjunBhatiaFutures(bt.Strategy):
     plotinfo = dict(subplot=True)
     def __init__(self):
         self.alligator = Alligator(
-            self.data, jaw_length = self.params.jaw_length, teeth_length = self.params.teeth_length, lips_length = self.params.lips_length, jaw_offset = self.params.jaw_offset, teeth_offset = self.params.teeth_offset, lips_offset = self.params.lips_offset, plotname = "Alligator"
+            self.data, jaw_length = self.params.jaw_length, teeth_length = self.params.teeth_length, lips_length = self.params.lips_length, jaw_offset = self.params.jaw_offset, teeth_offset = self.params.teeth_offset, lips_offset = self.params.lips_offset, plotname = "Alligator",
+        )
+        self.alligator.plotinfo.plotskip = dict(
+            jaw=dict(_plotskip=False),
+            teeth=dict(_plotskip=True),
+            lips=dict(_plotskip=True),
         )
         self.supertrend = SuperTrend(
             self.data, period = self.params.period, multiplier = self.params.multiplier, plotname = "Supertrend 10 , 3"
