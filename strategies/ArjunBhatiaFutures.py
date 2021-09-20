@@ -40,8 +40,10 @@ class ArjunBhatiaFutures(bt.Strategy):
         self.order = None
 
     def next(self):
+        # SHORT Trade TSL Update
         if(self.position.size < 0 and self.data.low[0] < self.sellPrice):
             self.tsl = self.sl - (self.sellPrice - self.data.low[0])/2
+        # LONG Trade TSL Update
         if(self.position.size > 0 and self.data.high[0] > self.buyPrice):
             self.tsl = self.sl + (self.data.high[0] - self.buyPrice)/2
         isAlligator = self.data.close[0] > self.alligator.jaw
@@ -101,11 +103,13 @@ class ArjunBhatiaFutures(bt.Strategy):
                 self.order = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.data.high[0])
         
         if self.order:
+            # SHORT Trade Order Cancel
             if self.order.size < 0:
                 if isAlligator or isSupertrend or self.datas[0].datetime.time().hour >= 15 or self.data.close[0] > self.pivotLevel:
                     self.isValid = False
                     self.log('SELL CANCELLED')
                     self.cancel(self.order)
+            # LONG Trade Order Cancel
             if self.order.size > 0:
                 if not isAlligator or  not isSupertrend or self.datas[0].datetime.time().hour >= 15 or self.data.close[0] < self.pivotLevel:
                     self.isValid = False
@@ -113,6 +117,7 @@ class ArjunBhatiaFutures(bt.Strategy):
                     self.cancel(self.order)
 
         if self.position:
+            # SHORT Trade Position Close
             if self.position.size < 0:
                 if self.data.high[0] >= self.tsl or self.data.low[0] <= self.target or self.datas[0].datetime.time().hour >= 15:
                     if(self.data.high[0] >= self.tsl):
@@ -122,6 +127,7 @@ class ArjunBhatiaFutures(bt.Strategy):
                     elif(self.datas[0].datetime.time().hour >= 15):
                         self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
                     self.order = self.close()
+            # LONG Trade Position Close
             if self.position.size > 0:
                 if self.data.low[0] <= self.tsl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
                     if(self.data.low[0] <= self.tsl):
