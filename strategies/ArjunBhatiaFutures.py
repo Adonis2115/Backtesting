@@ -5,7 +5,6 @@ from indicators.supertrend import SuperTrend
 # Create a Stratey
 class ArjunBhatiaFutures(bt.Strategy):
     params = (('jaw_length', 13), ('teeth_length', 8), ('lips_length', 5), ('jaw_offset', 8), ('teeth_offset', 5), ('lips_offset', 3), ('order_percentage', 0.95), ('ticker', 'Banknifty'), ('period', 10), ('multiplier', 3))
-    sl = target = isValid = buyPrice = None
     plotinfo = dict(subplot=True)
     
     def log(self, txt, dt=None):
@@ -41,6 +40,8 @@ class ArjunBhatiaFutures(bt.Strategy):
         self.order = None
 
     def next(self):
+        if(self.position and self.data.high[0] > self.buyPrice):
+            self.tsl = self.sl + (self.data.high[0] - self.buyPrice)/2
         isAlligator = self.data.close[0] > self.alligator.jaw
         isSupertrend = self.data.close[0] > self.supertrend
         isP = self.data.close[0] > self.pivotindicator.lines.p[0] and self.data.open[0] < self.pivotindicator.lines.p[0]
@@ -60,12 +61,12 @@ class ArjunBhatiaFutures(bt.Strategy):
                     self.pivotLevel = self.pivotindicator.lines.r1[0]
                 elif isR2:
                     self.pivotLevel = self.pivotindicator.lines.r2[0]
-                buyPrice = self.data.high[0]
+                self.buyPrice = self.data.high[0]
                 self.isValid = True
                 self.size = 2
                 self.log('BUY CREATE, %.2f' % self.data.high[0])
                 if self.data.high[0] - self.data.low[0] > 200:
-                    self.sl = self.data.high[0] - 200
+                    self.sl = self.sl = self.data.high[0] - 200
                     self.target = self.data.high[0] + (2*200)
                 else:
                     self.sl = self.data.low[0]
@@ -79,9 +80,9 @@ class ArjunBhatiaFutures(bt.Strategy):
                 self.cancel(self.order)
 
         if self.position:
-            if self.data.low[0] <= self.sl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
-                if(self.data.low[0] <= self.sl):
-                    self.log('STOP LOSS HIT, %.2f' % self.sl)
+            if self.data.low[0] <= self.tsl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
+                if(self.data.low[0] <= self.tsl):
+                    self.log('STOP LOSS HIT, %.2f' % self.tsl)
                 elif(self.data.high[0] >= self.target):
                     self.log('TARGET ACHIEVED, %.2f' % self.target)
                 elif(self.datas[0].datetime.time().hour >= 15):
