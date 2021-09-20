@@ -11,7 +11,6 @@ from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.pivotStrategy import PivotStrategy
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
-from strategies.SellFutures import SellFutures
 
 cerebro = bt.Cerebro()
 
