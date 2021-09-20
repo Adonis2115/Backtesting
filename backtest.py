@@ -11,6 +11,7 @@ from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.pivotStrategy import PivotStrategy
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
+from strategies.SellFutures import SellFutures
 
 cerebro = bt.Cerebro()
 
@@ -53,6 +54,6 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(ArjunBhatiaFutures)
+cerebro.addstrategy(SellFutures)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')

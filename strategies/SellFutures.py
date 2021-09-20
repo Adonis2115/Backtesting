@@ -3,7 +3,7 @@ from indicators.alligator import Alligator
 from indicators.supertrend import SuperTrend
 
 # Create a Stratey
-class ArjunBhatiaFutures(bt.Strategy):
+class SellFutures(bt.Strategy):
     params = (('jaw_length', 13), ('teeth_length', 8), ('lips_length', 5), ('jaw_offset', 8), ('teeth_offset', 5), ('lips_offset', 3), ('order_percentage', 0.95), ('ticker', 'Banknifty'), ('period', 10), ('multiplier', 3))
     plotinfo = dict(subplot=True)
     
@@ -40,17 +40,17 @@ class ArjunBhatiaFutures(bt.Strategy):
         self.order = None
 
     def next(self):
-        if(self.position and self.data.high[0] > self.buyPrice):
-            self.tsl = self.sl + (self.data.high[0] - self.buyPrice)/2
+        if(self.position and self.data.low[0] < self.sellPrice):
+            self.tsl = self.sl - (self.sellPrice - self.data.low[0])/2
         isAlligator = self.data.close[0] > self.alligator.jaw
         isSupertrend = self.data.close[0] > self.supertrend
-        isP = self.data.close[0] > self.pivotindicator.lines.p[0] and self.data.open[0] < self.pivotindicator.lines.p[0]
-        isS1 = self.data.close[0] > self.pivotindicator.s1[0] and self.data.open[0] < self.pivotindicator.s1[0]
-        isS2 = self.data.close[0] > self.pivotindicator.s2[0] and self.data.open[0] < self.pivotindicator.s2[0]
-        isR1 = self.data.close[0] > self.pivotindicator.r1[0] and self.data.open[0] < self.pivotindicator.r1[0]
-        isR2 = self.data.close[0] > self.pivotindicator.r2[0] and self.data.open[0] < self.pivotindicator.r2[0]
+        isP = self.data.close[0] < self.pivotindicator.lines.p[0] and self.data.open[0] > self.pivotindicator.lines.p[0]
+        isS1 = self.data.close[0] < self.pivotindicator.s1[0] and self.data.open[0] > self.pivotindicator.s1[0]
+        isS2 = self.data.close[0] < self.pivotindicator.s2[0] and self.data.open[0] > self.pivotindicator.s2[0]
+        isR1 = self.data.close[0] < self.pivotindicator.r1[0] and self.data.open[0] > self.pivotindicator.r1[0]
+        isR2 = self.data.close[0] < self.pivotindicator.r2[0] and self.data.open[0] > self.pivotindicator.r2[0]
         if not self.position and self.order is None:
-            if isAlligator and  isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2):
+            if not isAlligator and not isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2):
                 if isP:
                     self.pivotLevel = self.pivotindicator.lines.p[0]
                 elif isS1:
@@ -61,29 +61,29 @@ class ArjunBhatiaFutures(bt.Strategy):
                     self.pivotLevel = self.pivotindicator.lines.r1[0]
                 elif isR2:
                     self.pivotLevel = self.pivotindicator.lines.r2[0]
-                self.buyPrice = self.data.high[0]
+                self.sellPrice = self.data.low[0]
                 self.isValid = True
-                self.size = 2
-                self.log('BUY CREATE, %.2f' % self.data.high[0])
+                self.size = -2
+                self.log('SELL CREATE, %.2f' % self.data.low[0])
                 if self.data.high[0] - self.data.low[0] > 200:
-                    self.sl = self.tsl = self.data.high[0] - 200
-                    self.target = self.data.high[0] + (2*200)
+                    self.sl = self.tsl = self.data.low[0] + 200
+                    self.target = self.data.low[0] - (2*200)
                 else:
-                    self.sl = self.tsl = self.data.low[0]
-                    self.target = self.data.high[0] + 2*(self.data.high[0] - self.data.low[0])
-                self.order = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.data.high[0])
+                    self.sl = self.tsl = self.data.high[0]
+                    self.target = self.data.low[0] - 2*(self.data.high[0] - self.data.low[0])
+                self.order = self.sell(exectype=bt.Order.Stop, size=self.size, price=self.data.low[0])
 
         if self.order:
-            if not isAlligator or  not isSupertrend or self.datas[0].datetime.time().hour >= 15 or self.data.close[0] < self.pivotLevel:
+            if isAlligator or isSupertrend or self.datas[0].datetime.time().hour >= 15 or self.data.close[0] > self.pivotLevel:
                 self.isValid = False
-                self.log('BUY CANCELLED')
+                self.log('SELL CANCELLED')
                 self.cancel(self.order)
 
         if self.position:
-            if self.data.low[0] <= self.tsl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
-                if(self.data.low[0] <= self.tsl):
+            if self.data.high[0] >= self.tsl or self.data.low[0] <= self.target or self.datas[0].datetime.time().hour >= 15:
+                if(self.data.high[0] >= self.tsl):
                     self.log('STOP LOSS HIT, %.2f' % self.tsl)
-                elif(self.data.high[0] >= self.target):
+                elif(self.data.low[0] <= self.target):
                     self.log('TARGET ACHIEVED, %.2f' % self.target)
                 elif(self.datas[0].datetime.time().hour >= 15):
                     self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
