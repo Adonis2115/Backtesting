@@ -45,7 +45,6 @@ data2 = bt.feeds.YahooFinanceCSVData(
     reverse = False
 )
 
-# cerebro.adddata(data)
 cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
                          compression=15)
@@ -55,6 +54,5 @@ cerebro.resampledata(data,
 
 
 cerebro.addstrategy(ArjunBhatiaFutures)
-# cerebro.addindicator(PivotPoint)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')
