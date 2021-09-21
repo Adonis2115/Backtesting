@@ -53,6 +53,6 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(SellFutures)
+cerebro.addstrategy(ArjunBhatiaFutures)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')

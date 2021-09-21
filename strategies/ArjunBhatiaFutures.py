@@ -41,67 +41,77 @@ class ArjunBhatiaFutures(bt.Strategy):
 
     def next(self):
         # SHORT Trade TSL Update
-        if(self.position.size < 0 and self.data.low[0] < self.sellPrice):
-            self.tsl = self.sl - (self.sellPrice - self.data.low[0])/2
+        if(self.position.size < 0 and self.data.low[0] < self.lastLow):
+            self.tsl = self.tsl - (self.lastLow - self.data.low[0])/2
         # LONG Trade TSL Update
-        if(self.position.size > 0 and self.data.high[0] > self.buyPrice):
-            self.tsl = self.sl + (self.data.high[0] - self.buyPrice)/2
+        if(self.position.size > 0 and self.data.high[0] > self.lastHigh):
+            self.tsl = self.tsl + (self.data.high[0] - self.lastHigh)/2
         isAlligator = self.data.close[0] > self.alligator.jaw
         isSupertrend = self.data.close[0] > self.supertrend
-        isP = (self.data.close[0] < self.pivotindicator.lines.p[0] and self.data.open[0] > self.pivotindicator.lines.p[0]) or (self.data.close[0] > self.pivotindicator.lines.p[0] and self.data.open[0] < self.pivotindicator.lines.p[0])
-        isS1 = (self.data.close[0] < self.pivotindicator.s1[0] and self.data.open[0] > self.pivotindicator.s1[0]) or (self.data.close[0] > self.pivotindicator.s1[0] and self.data.open[0] < self.pivotindicator.s1[0])
-        isS2 = (self.data.close[0] < self.pivotindicator.s2[0] and self.data.open[0] > self.pivotindicator.s2[0]) or (self.data.close[0] > self.pivotindicator.s2[0] and self.data.open[0] < self.pivotindicator.s2[0])
-        isR1 = (self.data.close[0] < self.pivotindicator.r1[0] and self.data.open[0] > self.pivotindicator.r1[0]) or (self.data.close[0] > self.pivotindicator.r1[0] and self.data.open[0] < self.pivotindicator.r1[0])
-        isR2 = (self.data.close[0] < self.pivotindicator.r2[0] and self.data.open[0] > self.pivotindicator.r2[0]) or (self.data.close[0] > self.pivotindicator.r2[0] and self.data.open[0] < self.pivotindicator.r2[0])
         if not self.position and self.order is None:
             # SHORT Trade
-            if not isAlligator and not isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2):
-                if isP:
-                    self.pivotLevel = self.pivotindicator.lines.p[0]
-                elif isS1:
-                    self.pivotLevel = self.pivotindicator.lines.s1[0]
-                elif isS2:
-                    self.pivotLevel = self.pivotindicator.lines.s2[0]
-                elif isR1:
-                    self.pivotLevel = self.pivotindicator.lines.r1[0]
-                elif isR2:
-                    self.pivotLevel = self.pivotindicator.lines.r2[0]
-                self.sellPrice = self.data.low[0]
-                self.isValid = True
-                self.size = -2
-                self.log('SELL CREATE, %.2f' % self.data.low[0])
-                if self.data.high[0] - self.data.low[0] > 200:
-                    self.sl = self.tsl = self.data.low[0] + 200
-                    self.target = self.data.low[0] - (2*200)
-                else:
-                    self.sl = self.tsl = self.data.high[0]
-                    self.target = self.data.low[0] - 2*(self.data.high[0] - self.data.low[0])
-                self.order = self.sell(exectype=bt.Order.Stop, size=self.size, price=self.data.low[0])
+            if not isAlligator and not isSupertrend:
+                isP = self.data.close[0] < self.pivotindicator.lines.p[0] and self.data.open[0] > self.pivotindicator.lines.p[0]
+                isS1 = self.data.close[0] < self.pivotindicator.s1[0] and self.data.open[0] > self.pivotindicator.s1[0]
+                isS1 = self.data.close[0] < self.pivotindicator.s1[0] and self.data.open[0] > self.pivotindicator.s1[0]
+                isS2 = self.data.close[0] < self.pivotindicator.s2[0] and self.data.open[0] > self.pivotindicator.s2[0]
+                isR1 = self.data.close[0] < self.pivotindicator.r1[0] and self.data.open[0] > self.pivotindicator.r1[0]
+                isR2 = self.data.close[0] < self.pivotindicator.r2[0] and self.data.open[0] > self.pivotindicator.r2[0]
+                if  isP or isS1 or isS2 or isR1 or isR2:
+                    if isP:
+                        self.pivotLevel = self.pivotindicator.lines.p[0]
+                    elif isS1:
+                        self.pivotLevel = self.pivotindicator.lines.s1[0]
+                    elif isS2:
+                        self.pivotLevel = self.pivotindicator.lines.s2[0]
+                    elif isR1:
+                        self.pivotLevel = self.pivotindicator.lines.r1[0]
+                    elif isR2:
+                        self.pivotLevel = self.pivotindicator.lines.r2[0]
+                    self.sellPrice = self.data.low[0]
+                    self.lastLow = self.data.low[0]
+                    self.isValid = True
+                    self.size = -25
+                    self.log('SELL CREATE, %.2f' % self.data.low[0])
+                    if self.data.high[0] - self.data.low[0] > 200:
+                        self.sl = self.tsl = self.data.low[0] + 200
+                        self.target = self.data.low[0] - (2*200)
+                    else:
+                        self.sl = self.tsl = self.data.high[0]
+                        self.target = self.data.low[0] - 2*(self.data.high[0] - self.data.low[0])
+                    self.order = self.sell(exectype=bt.Order.Stop, size=self.size, price=self.data.low[0])
             
             #LONG Trade
-            if isAlligator and  isSupertrend and  (isP or isS1 or isS2 or isR1 or isR2):
-                if isP:
-                    self.pivotLevel = self.pivotindicator.lines.p[0]
-                elif isS1:
-                    self.pivotLevel = self.pivotindicator.lines.s1[0]
-                elif isS2:
-                    self.pivotLevel = self.pivotindicator.lines.s2[0]
-                elif isR1:
-                    self.pivotLevel = self.pivotindicator.lines.r1[0]
-                elif isR2:
-                    self.pivotLevel = self.pivotindicator.lines.r2[0]
-                self.buyPrice = self.data.high[0]
-                self.isValid = True
-                self.size = 2
-                self.log('BUY CREATE, %.2f' % self.data.high[0])
-                if self.data.high[0] - self.data.low[0] > 200:
-                    self.sl = self.tsl = self.data.high[0] - 200
-                    self.target = self.data.high[0] + (2*200)
-                else:
-                    self.sl = self.tsl = self.data.low[0]
-                    self.target = self.data.high[0] + 2*(self.data.high[0] - self.data.low[0])
-                self.order = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.data.high[0])
-        
+            if isAlligator and isSupertrend:
+                isP = self.data.close[0] > self.pivotindicator.lines.p[0] and self.data.open[0] < self.pivotindicator.lines.p[0]
+                isS1 = self.data.close[0] > self.pivotindicator.s1[0] and self.data.open[0] < self.pivotindicator.s1[0]
+                isS2 = self.data.close[0] > self.pivotindicator.s2[0] and self.data.open[0] < self.pivotindicator.s2[0]
+                isR1 = self.data.close[0] > self.pivotindicator.r1[0] and self.data.open[0] < self.pivotindicator.r1[0]
+                isR2 = self.data.close[0] > self.pivotindicator.r2[0] and self.data.open[0] < self.pivotindicator.r2[0]
+                if isP or isS1 or isS2 or isR1 or isR2:
+                    if isP:
+                        self.pivotLevel = self.pivotindicator.lines.p[0]
+                    elif isS1:
+                        self.pivotLevel = self.pivotindicator.lines.s1[0]
+                    elif isS2:
+                        self.pivotLevel = self.pivotindicator.lines.s2[0]
+                    elif isR1:
+                        self.pivotLevel = self.pivotindicator.lines.r1[0]
+                    elif isR2:
+                        self.pivotLevel = self.pivotindicator.lines.r2[0]
+                    self.buyPrice = self.data.high[0]
+                    self.lastHigh = self.data.high[0]
+                    self.isValid = True
+                    self.size = 25
+                    self.log('BUY CREATE, %.2f' % self.data.high[0])
+                    if self.data.high[0] - self.data.low[0] > 200:
+                        self.sl = self.tsl = self.data.high[0] - 200
+                        self.target = self.data.high[0] + (2*200)
+                    else:
+                        self.sl = self.tsl = self.data.low[0]
+                        self.target = self.data.high[0] + 2*(self.data.high[0] - self.data.low[0])
+                    self.order = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.data.high[0])
+       
         if self.order:
             # SHORT Trade Order Cancel
             if self.order.size < 0:
