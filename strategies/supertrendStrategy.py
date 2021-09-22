@@ -1,4 +1,3 @@
-import math
 import backtrader as bt
 from indicators.supertrend import SuperTrend
 
@@ -13,8 +12,7 @@ class SupertrendStrategy(bt.Strategy):
     def next(self):
         if self.position.size == 0:
             if self.data.close > self.band:
-                amount_to_invest = (self.params.order_percentage * self.broker.cash)
-                self.size = math.floor(amount_to_invest / self.data.close)
+                self.size = 50
                 print("Buy {} shares of {} at {}".format(self.size, self.params.ticker, self.data.close[0]))
                 self.buy(size=self.size)
 

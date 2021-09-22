@@ -5,12 +5,11 @@ import backtrader.feeds as btfeed
 from strategies.dip import BuyDip
 from strategies.sma import SmaCross
 from strategies.goldenCross import GoldenCross
-from strategies.BuyHold import BuyHold
 from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
-from strategies.pivotStrategy import PivotStrategy
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
+from strategies.OrderSubmit import OrderSubmit
 
 cerebro = bt.Cerebro()
 
@@ -53,6 +52,6 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(ArjunBhatiaFutures)
+cerebro.addstrategy(SupertrendStrategy)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')
