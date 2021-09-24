@@ -1,2 +1,5 @@
 __pycache__
 test.ipynb
+chromedriver.exe
+credentials.json
+logs

@@ -9,7 +9,6 @@ from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
-from strategies.OrderSubmit import OrderSubmit
 
 cerebro = bt.Cerebro()
 
