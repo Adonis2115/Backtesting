@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import undetected_chromedriver as uc
 import time
 import json
+import pandas as pd
 
 f = open('./brokers/fyers/credentials.json')
 credentials = json.load(f)
@@ -78,4 +79,15 @@ is_async = True
 
 data = {"symbol":"NSE:BANKNIFTY21SEPFUT","resolution":"1","date_format":"1","range_from":"2021-07-01","range_to":"2021-09-25","cont_flag":"1"}
 
-print(fyers.history(data)['candles'])
+df = pd.DataFrame(fyers.history(data)['candles'])
+df[0] = pd.to_datetime(df[0], unit='s')
+df[6] = [d.date() for d in df[0]]
+df[7] = [d.time() for d in df[0]]
+del df[0]
+clist = list(df.columns)
+clist_new = clist[-1:]+clist[:-1]
+df = df[clist_new]
+clist = list(df.columns)
+clist_new = clist[-1:]+clist[:-1]
+df = df[clist_new]
+print(df)
