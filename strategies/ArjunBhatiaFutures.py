@@ -130,26 +130,24 @@ class ArjunBhatiaFutures(bt.Strategy):
         if self.position:
             # SHORT Trade Position Close
             if self.position.size < 0:
-                if self.data.high[0] >= self.tsl or self.data.low[0] <= self.target or self.datas[0].datetime.time().hour >= 15:
-                    if(self.data.high[0] >= self.tsl):
-                        self.log('STOP LOSS HIT, %.2f' % self.tsl)
-                        self.order = self.close(price=self.tsl)
-                    elif(self.data.low[0] <= self.target):
-                        self.log('TARGET ACHIEVED, %.2f' % self.target)
-                        self.order = self.close(price=self.target)
-                    elif(self.datas[0].datetime.time().hour >= 15):
-                        self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
-                        self.order = self.close()
+                if(self.data.high[0] >= self.tsl):
+                    self.log('STOP LOSS HIT, %.2f' % self.tsl)
+                    self.order = self.close(price=self.tsl)
+                elif(self.data.low[0] <= self.target):
+                    self.log('TARGET ACHIEVED, %.2f' % self.target)
+                    self.order = self.close(price=self.target)
+                elif(self.datas[0].datetime.time().hour >= 15):
+                    self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
+                    self.order = self.close()
 
             # LONG Trade Position Close
             if self.position.size > 0:
-                if self.data.low[0] <= self.tsl or self.data.high[0] >= self.target or self.datas[0].datetime.time().hour >= 15:
-                    if(self.data.low[0] <= self.tsl):
-                        self.log('STOP LOSS HIT, %.2f' % self.tsl)
-                        self.order = self.close(price=self.tsl)
-                    elif(self.data.high[0] >= self.target):
-                        self.log('TARGET ACHIEVED, %.2f' % self.target)
-                        self.order = self.close(price=self.target)
-                    elif(self.datas[0].datetime.time().hour >= 15):
-                        self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
-                        self.order = self.close()
+                if(self.data.low[0] <= self.tsl):
+                    self.log('STOP LOSS HIT, %.2f' % self.tsl)
+                    self.order = self.close(price=self.tsl)
+                elif(self.data.high[0] >= self.target):
+                    self.log('TARGET ACHIEVED, %.2f' % self.target)
+                    self.order = self.close(price=self.target)
+                elif(self.datas[0].datetime.time().hour >= 15):
+                    self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
+                    self.order = self.close()
