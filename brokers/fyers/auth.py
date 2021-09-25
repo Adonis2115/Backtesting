@@ -4,15 +4,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 import undetected_chromedriver as uc
 import time
 import json
-import pandas as pd
-
-f = open('./brokers/fyers/credentials.json')
-credentials = json.load(f)
-appID = credentials['appID']
-token = credentials['token']
 
 def getToken():
-    f = open('./brokers/credentials.json')
+    f = open('./brokers/fyers/credentials.json')
     credentials = json.load(f)
     appID = credentials['appID']
     secretID = credentials['secretID']
@@ -49,11 +43,11 @@ def getToken():
         
         credentials['auth_code'] = auth_code
 
-        f = open("./brokers/credentials.json", "w")
+        f = open("./brokers/fyers/credentials.json", "w")
         json.dump(credentials, f)
         f.close()
 
-    f = open('./brokers/credentials.json')
+    f = open('./brokers/fyers/credentials.json')
     credentials = json.load(f)
 
     auth_code = credentials['auth_code']
@@ -64,30 +58,20 @@ def getToken():
     token = response["access_token"]
     credentials['token'] = token
 
-    f = open("./brokers/credentials.json", "w")
+    f = open("./brokers/fyers/credentials.json", "w")
     json.dump(credentials, f)
     f.close()
 
-    f = open('./brokers/credentials.json')
+    f = open('./brokers/fyers/credentials.json')
     credentials = json.load(f)
+
+f = open('./brokers/fyers/credentials.json')
+credentials = json.load(f)
+appID = credentials['appID']
+token = credentials['token']
 
 fyers = fyersModel.FyersModel(client_id=appID, token=token, log_path="C:/Users/Himanshu Pandey/Documents/Project/Code/backtrader/brokers/fyers/logs")
 is_async = True
 
-# if fyers.get_profile()['code'] != 200:
-#     getToken()
-
-data = {"symbol":"NSE:BANKNIFTY21SEPFUT","resolution":"1","date_format":"1","range_from":"2021-07-01","range_to":"2021-09-25","cont_flag":"1"}
-
-df = pd.DataFrame(fyers.history(data)['candles'])
-df[0] = pd.to_datetime(df[0], unit='s')
-df[6] = [d.date() for d in df[0]]
-df[7] = [d.time() for d in df[0]]
-del df[0]
-clist = list(df.columns)
-clist_new = clist[-1:]+clist[:-1]
-df = df[clist_new]
-clist = list(df.columns)
-clist_new = clist[-1:]+clist[:-1]
-df = df[clist_new]
-print(df)
+if fyers.get_profile()['code'] != 200:
+    getToken()
