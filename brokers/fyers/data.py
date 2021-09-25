@@ -27,5 +27,5 @@ clist = list(df.columns)
 clist_new = clist[-1:]+clist[:-1]
 df = df[clist_new]
 df.insert(0, 0, 'BANKNIFTY21SEPFUT')
-df.to_csv('./Data/Custom/BANKNIFTY21SEPFUT.csv', index=False, header=False)
+df.to_csv('./Data/Custom/BANKNIFTY21SEPFUT-SEP.csv', index=False, header=False)
 print(df)

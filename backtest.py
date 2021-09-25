@@ -15,16 +15,16 @@ cerebro = bt.Cerebro()
 cerebro.broker.set_cash(1000000)
 
 data = btfeed.GenericCSVData(
-    dataname='./Data/Custom/BANKNIFTY.csv',
+    dataname='./Data/Custom/BANKNIFTY21SEPFUT-SEP.csv',
 
-    fromdate=datetime.datetime(2020, 1, 1),
-    todate=datetime.datetime(2020, 12, 31),
+    fromdate=datetime.datetime(2021, 9, 1),
+    todate=datetime.datetime(2021, 9, 30),
     nullvalue=0.0,
-    dtformat=('%Y/%m/%d'),
-    tmformat=('%H:%M'),
+    dtformat=('%Y-%m-%d'),
+    tmformat=('%H:%M:%S'),
 
     timeframe=bt.TimeFrame.Minutes, compression=1,
-    sessionstart=datetime.time(9, 16), sessionend=datetime.time(15, 33),
+    sessionstart=datetime.time(9, 15), sessionend=datetime.time(15, 30),
 
     datetime=1,
     time=2,
