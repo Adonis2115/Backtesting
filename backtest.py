@@ -9,19 +9,20 @@ from strategies.supertrendStrategy import SupertrendStrategy
 from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
+from strategies.StopOrderSubmit import StopOrderSubmit
 
 cerebro = bt.Cerebro()
 
 cerebro.broker.set_cash(1000000)
 
 data = btfeed.GenericCSVData(
-    dataname='./Data/Custom/BANKNIFTY21SEPFUT-SEP.csv',
+    dataname='./Data/Custom/BANKNIFTY.csv',
 
-    fromdate=datetime.datetime(2021, 9, 1),
-    todate=datetime.datetime(2021, 9, 30),
+    fromdate=datetime.datetime(2020, 1, 1),
+    todate=datetime.datetime(2020, 12, 31),
     nullvalue=0.0,
-    dtformat=('%Y-%m-%d'),
-    tmformat=('%H:%M:%S'),
+    dtformat=('%Y/%m/%d'),
+    tmformat=('%H:%M'),
 
     timeframe=bt.TimeFrame.Minutes, compression=1,
     sessionstart=datetime.time(9, 15), sessionend=datetime.time(15, 30),
@@ -51,6 +52,6 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(ArjunBhatiaFutures)
+cerebro.addstrategy(StopOrderSubmit)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')
