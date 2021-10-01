@@ -23,7 +23,7 @@ class StopOrderSubmit(bt.Strategy):
                 self.log('BUY EXECUTED {}'.format(order.executed.price))
             elif order.issell():
                 self.log('SELL EXECUTED {}'.format(order.executed.price))
-        self.order = self.stopLoss = self.targetOrder = None
+        self.order = None
 
     def __init__(self):
         self.alligator = Alligator(
@@ -42,13 +42,14 @@ class StopOrderSubmit(bt.Strategy):
 
     def next(self):
         # Update Stop Loss (Trailing) Traget Order was also getting cancelled so made new target Orders as well
-        if(self.position.size < 0 and self.data.low[0] < self.lastLow):
-            trailedAmount = (self.lastLow - self.data.low[0])/2
-            self.tsl = self.tsl - trailedAmount
-            self.lastLow = self.data.low[0]
-            self.cancel(self.stopLoss)
-            self.stopLoss = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.tsl)
-            self.targetOrder = self.buy(exectype=bt.Order.Limit, size=self.size, price=self.target, oco=self.stopLoss)
+        if self.position.size < 0:
+            if self.data.low[0] < self.lastLow:
+                trailedAmount = (self.lastLow - self.data.low[0])/2
+                self.tsl = self.tsl - trailedAmount
+                self.lastLow = self.data.low[0]
+                self.cancel(self.stopLoss)
+                self.stopLoss = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.tsl)
+                self.targetOrder = self.buy(exectype=bt.Order.Limit, size=self.size, price=self.target, oco=self.stopLoss)
         # LONG Trade Trailing Update
         if(self.position.size > 0 and self.data.high[0] > self.lastHigh):
             trailedAmount = (self.data.high[0] - self.lastHigh)/2
@@ -94,7 +95,7 @@ class StopOrderSubmit(bt.Strategy):
                     self.log('STOP LOSS is, %.2f' % self.tsl)
                     self.log('TARGET is, %.2f' % self.target)
                     self.stopLoss = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.tsl, parent=self.order)
-                    self.targetOrder = self.buy(exectype=bt.Order.Limit, size=self.size, price=self.target, parent=self.order)
+                    self.targetOrder = self.buy(exectype=bt.Order.Limit, size=self.size, price=self.target, parent=self.order, oco=self.stopLoss)
             
             #LONG Trade
             if isAlligator and isSupertrend and self.datas[0].datetime.time().hour < 15:
@@ -129,7 +130,7 @@ class StopOrderSubmit(bt.Strategy):
                     self.log('STOP LOSS is, %.2f' % self.tsl)
                     self.log('TARGET is, %.2f' % self.target)
                     self.stopLoss = self.sell(exectype=bt.Order.Stop, size=self.size, price=self.tsl, parent=self.order)
-                    self.targetOrder = self.sell(exectype=bt.Order.Limit, size=self.size, price=self.target, parent=self.order)
+                    self.targetOrder = self.sell(exectype=bt.Order.Limit, size=self.size, price=self.target, parent=self.order, oco=self.stopLoss)
 
         if self.order:
             # SHORT Trade Order Cancel if conditions nullifies
@@ -146,8 +147,8 @@ class StopOrderSubmit(bt.Strategy):
                     self.cancel(self.order)
 
         # Trade Closing and Order cancelling after 3 PM
-        if self.position and self.datas[0].datetime.time().hour >= 15:
+        if self.position.size > 0 or self.position.size < 0 and self.datas[0].datetime.time().hour >= 15:
             self.log('TRADING TIME OVER, %.2f' % self.datas[0].datetime.time().hour)
-            # self.stopLoss = self.buy(exectype=bt.Order.Stop, size=self.size, price=self.tsl)
             self.close(self.order)
             self.cancel(self.stopLoss)
+            self.cancel(self.targetOrder)
