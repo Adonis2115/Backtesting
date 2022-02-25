@@ -10,6 +10,7 @@ from strategies.alligatorStrategy import AlligatorStrategy
 from indicators.pivots import PivotPoint
 from strategies.ArjunBhatiaFutures import ArjunBhatiaFutures
 from strategies.StopOrderSubmit import StopOrderSubmit
+from strategies.dipBuy import DipBuy
 
 cerebro = bt.Cerebro()
 
@@ -44,6 +45,8 @@ data2 = bt.feeds.YahooFinanceCSVData(
     reverse = False
 )
 
+# cerebro.adddata(data).plotinfo.plot=False
+
 cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
                          compression=15)
@@ -52,6 +55,6 @@ cerebro.resampledata(data,
                          compression=1).plotinfo.plot=False
 
 
-cerebro.addstrategy(ArjunBhatiaFutures)
+cerebro.addstrategy(DipBuy)
 cerebro.run()
 cerebro.plot(style='candle', barup='green')

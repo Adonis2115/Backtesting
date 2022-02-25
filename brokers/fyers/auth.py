@@ -1,7 +1,8 @@
 from fyers_api import fyersModel
 from fyers_api import accessToken
 from selenium.webdriver.support.ui import WebDriverWait
-import undetected_chromedriver as uc
+from selenium import webdriver
+from chromedriver_py import binary_path
 import time
 import json
 
@@ -20,7 +21,7 @@ def getToken():
             state='state')
 
     authUrl = session.generate_authcode()
-    driver = uc.Chrome()
+    driver =  webdriver.Chrome(executable_path=binary_path)
     with driver:
         driver.get(authUrl)
         if driver.current_url == authUrl:
